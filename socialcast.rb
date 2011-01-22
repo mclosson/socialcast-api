@@ -9,13 +9,13 @@ end
 
 class Message < SocialcastAPI
 
-	class Like < SocialcastAPI
-		self.site = Message.site.to_s + "messages/:message_id/"
-	end
+  class Like < SocialcastAPI
+    self.site = Message.site.to_s + "messages/:message_id/"
+  end
 
-	class Flag < SocialcastAPI
-		self.site = Message.site.to_s + "messages/:message_id/"
-	end
+  class Flag < SocialcastAPI
+    self.site = Message.site.to_s + "messages/:message_id/"
+  end
 
   def self.search(args = {})
     get(:search, args).map {|message| Message.new(message)}
@@ -26,11 +26,11 @@ class Message < SocialcastAPI
   end
   
   def unlike
-		likedbyme = likes.select {|alike| alike.unlikable}.first
-		if likedbyme
-			likedbyme.prefix_options = {:message_id => self.id}
-			likedbyme.destroy 
-		end
+    likedbyme = likes.select {|alike| alike.unlikable}.first
+    if likedbyme
+      likedbyme.prefix_options = {:message_id => self.id}
+      likedbyme.destroy 
+    end
   end
   
   def flag
@@ -38,8 +38,32 @@ class Message < SocialcastAPI
   end
 
   def unflag
-		Message.delete(id.to_s + '/flags/' + attributes[:flag].id)
+    Message.delete(id.to_s + '/flags/' + attributes[:flag].id)
   end
+
+end
+
+class Comment < SocialcastAPI
+
+  self.site = Message.site.to_s + "messages/:message_id/"
+
+  class Like < SocialcastAPI
+    self.site = Comment.site.to_s + "comments/:comment_id/"
+  end
+
+  def like
+    Comment.post(id.to_s + '/likes')
+  end
+  
+  def unlike
+    likedbyme = likes.select {|alike| alike.unlikable}.first
+    if likedbyme
+      likedbyme.prefix_options = {:message_id => message_id, :comment_id => self.id}
+      likedbyme.destroy 
+    end
+  end
+
+end
 
 end
 
