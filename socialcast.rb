@@ -8,26 +8,38 @@ class SocialcastAPI < ActiveResource::Base
 end
 
 class Message < SocialcastAPI
-  
+
+	class Like < SocialcastAPI
+		self.site = Message.site.to_s + "messages/:message_id/"
+	end
+
+	class Flag < SocialcastAPI
+		self.site = Message.site.to_s + "messages/:message_id/"
+	end
+
   def self.search(args = {})
     get(:search, args).map {|message| Message.new(message)}
   end
   
   def like
-    post(:likes)
+    Message.post(id.to_s + '/likes')
   end
   
-  # Unlike a message
-  # def unlike
-  # end
+  def unlike
+		likedbyme = likes.select {|alike| alike.unlikable}.first
+		if likedbyme
+			likedbyme.prefix_options = {:message_id => self.id}
+			likedbyme.destroy 
+		end
+  end
   
   def flag
-    post(:flags)
+    Message.post(id.to_s + '/flags')
   end
 
-  # Unflag a message
-  # def unflag
-  # end
+  def unflag
+		Message.delete(id.to_s + '/flags/' + attributes[:flag].id)
+  end
 
 end
 
@@ -46,7 +58,7 @@ class User < SocialcastAPI
   end
   
   def follow
-    post(:followers)
+    User.post(id.to_s + '/followers')
   end
   
   # Unfollow a user
