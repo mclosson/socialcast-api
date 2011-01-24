@@ -1,5 +1,3 @@
-require 'active_resource'
-
 class SocialcastAPI < ActiveResource::Base
   auth = YAML::load(File.open('socialcast.yml'))
   self.site = "https://#{auth['subdomain']}.socialcast.com/api/"
