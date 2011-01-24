@@ -8,9 +8,9 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Matthew Closson", "Sean Cashin"]
   s.email       = ["scashin133@gmail.com"]
-  s.homepage    = ""
+  s.homepage    = "http://github.com/scashin133/socialcast-api"
   s.summary     = %q{Socialcast API Interface and Examples}
-  s.description = %q{Socialcast API Interface and Examples}
+  s.description = %q{Socialcast API Interface and Examples.  This is a fork of https://github.com/mclosson/socialcast-api}
 
   s.rubyforge_project = "scashin133-socialcast-api"
   s.add_runtime_dependency(%q<active_resource>, [">= 2.3"])
