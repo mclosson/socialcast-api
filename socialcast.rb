@@ -20,6 +20,20 @@ class Message < SocialcastAPI
   def self.search(args = {})
     get(:search, args).map {|message| Message.new(message)}
   end
+
+  def self.search_all_pages(args = {})
+    results = Array.new
+    page = 1
+    per_page = 500    
+    
+    begin
+      messages = get(:search, :page => page, :per_page => per_page, :q => args[:q]).map {|message| Message.new(message)}
+      page += 1
+      results += messages
+    end until messages.count < per_page
+
+    return results
+  end
   
   def like
     Message.post(id.to_s + '/likes')
@@ -65,8 +79,6 @@ class Comment < SocialcastAPI
 
 end
 
-end
-
 class User < SocialcastAPI
 
   def self.search(args = {})
@@ -85,12 +97,26 @@ class User < SocialcastAPI
     User.post(id.to_s + '/followers')
   end
   
-  # Unfollow a user
-  # def unfollow
-  # end
+  def unfollow
+    delete('followers/' + contact_id.to_s)  
+  end
   
   def following(args = {})
     get(:following, args).map {|user| User.new(user)}
+  end
+
+  def self.all_pages
+    results = Array.new
+    page = 1
+    per_page = 500    
+    
+    begin
+      users = all(:params => {:page => page, :per_page => per_page})
+      page += 1
+      results += users
+    end until users.count < per_page
+
+    return results
   end
   
 end
@@ -120,5 +146,6 @@ end
 class ContentFilter < SocialcastAPI
 end
 
+# This class is not working or tested yet, just a frame!
 class Attachment < SocialcastAPI
 end

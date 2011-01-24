@@ -1,1 +1,43 @@
-ECHO is on.
+First off I am not affiliated with Socialcast the company in any way.
+
+SocialcastAPI is a ruby interface to the RESTful API provided by Socialcast.com
+for interacting with their services as outlined here: 
+
+http://www.socialcast.com/resources/api.html
+
+Here I am implementing it using the ActiveResource library
+
+http://api.rubyonrails.org/classes/ActiveResource/Base.html
+
+which supports dynamically generating Ruby objects from the XML or JSON 
+structures returned from the calls to the web services.  At this point it is 
+mostly functional, I haven't really started playing with the attachments portion
+yet so don't expect that to work at the moment.  I need to add a lot of 
+documentation and examples though.  That's probably the next big thing to be 
+done.
+
+# Post a new message to your general purpose stream
+Message.new(:body => 'This was sent via the API')
+
+# Find the user named John Smith
+User.search(:q => 'john smith').first
+
+# List the top 10 users who have posted the most #worklogs
+users = Hash.new(0)
+
+Message.search_all_pages(:q => '#worklog').each do |message|
+  users[message.user.name] += 1
+end
+
+users.sort {|a,b| a[1] <=> b[1]}.reverse.first(10).each {|user| puts "#{user[0]}: #{user[1]}"}
+
+# Print count of all users in the community
+puts User.all_pages.count
+
+# Print all users name and url
+User.all_pages.each_with_index do |user, index|
+  puts "#{index}: #{user.name} - #{user.url}"
+end
+
+More examples to come.
+
