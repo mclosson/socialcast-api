@@ -1,151 +1,169 @@
 require 'active_resource'
+require 'singleton'
 
-class SocialcastAPI < ActiveResource::Base
-  auth = YAML::load(File.open('socialcast.yml'))
-  self.site = "https://#{auth['subdomain']}.socialcast.com/api/"
-  self.user = auth['user']
-  self.password = auth['password']
-end
-
-class Message < SocialcastAPI
-
-  class Like < SocialcastAPI
-    self.site = Message.site.to_s + "messages/:message_id/"
-  end
-
-  class Flag < SocialcastAPI
-    self.site = Message.site.to_s + "messages/:message_id/"
-  end
-
-  def self.search(args = {})
-    get(:search, args).map {|message| Message.new(message)}
-  end
-
-  def self.search_all_pages(args = {})
-    results = Array.new
-    page = 1
-    per_page = 500    
-    
-    begin
-      messages = get(:search, :page => page, :per_page => per_page, :q => args[:q]).map {|message| Message.new(message)}
-      page += 1
-      results += messages
-    end until messages.count < per_page
-
-    return results
+module SocialcastApi
+  class Configuration
+    include Singleton
+    ATTRIBUTES = [:domain, :user, :password]
+    attr_accessor *ATTRIBUTES
   end
   
-  def like
-    Message.post(id.to_s + '/likes')
+  def self.configuration
+    if block_given?
+      yield Configuration.instance
+      Base.update_connection
+    end
+    Configuration.instance
   end
   
-  def unlike
-    likedbyme = likes.select {|alike| alike.unlikable}.first
-    if likedbyme
-      likedbyme.prefix_options = {:message_id => self.id}
-      likedbyme.destroy 
+  class Base < ActiveResource::Base
+    def self.update_connection
+      self.site = "https://#{SocialcastApi.configuration.domain}/api/"
+      self.user = SocialcastApi.configuration.user
+      self.password = SocialcastApi.configuration.password
     end
   end
   
-  def flag
-    Message.post(id.to_s + '/flags')
-  end
+  class Message < Base
 
-  def unflag
-    Message.delete(id.to_s + '/flags/' + attributes[:flag].id)
-  end
-
-end
-
-class Comment < SocialcastAPI
-
-  self.site = Message.site.to_s + "messages/:message_id/"
-
-  class Like < SocialcastAPI
-    self.site = Comment.site.to_s + "comments/:comment_id/"
-  end
-
-  def like
-    Comment.post(id.to_s + '/likes')
-  end
-  
-  def unlike
-    likedbyme = likes.select {|alike| alike.unlikable}.first
-    if likedbyme
-      likedbyme.prefix_options = {:message_id => message_id, :comment_id => self.id}
-      likedbyme.destroy 
+    class Like < Base
+      self.site = Message.site.to_s + "messages/:message_id/"
     end
-  end
 
-end
+    class Flag < Base
+      self.site = Message.site.to_s + "messages/:message_id/"
+    end
 
-class User < SocialcastAPI
+    def self.search(args = {})
+      get(:search, args).map {|message| Message.new(message)}
+    end
 
-  def self.search(args = {})
-    get(:search, args).map {|user| User.new(user)}
-  end
-  
-  def messages
-    get(:messages).map {|message| Message.new(message)}
-  end
-  
-  def followers(args = {})
-    get(:followers, args).map {|follower| User.new(follower)}
-  end
-  
-  def follow
-    User.post(id.to_s + '/followers')
-  end
-  
-  def unfollow
-    delete('followers/' + contact_id.to_s)  
-  end
-  
-  def following(args = {})
-    get(:following, args).map {|user| User.new(user)}
-  end
-
-  def self.all_pages
-    results = Array.new
-    page = 1
-    per_page = 500    
+    def self.search_all_pages(args = {})
+      results = Array.new
+      page = 1
+      per_page = 500    
     
-    begin
-      users = all(:params => {:page => page, :per_page => per_page})
-      page += 1
-      results += users
-    end until users.count < per_page
+      begin
+        messages = get(:search, :page => page, :per_page => per_page, :q => args[:q]).map {|message| Message.new(message)}
+        page += 1
+        results += messages
+      end until messages.count < per_page
 
-    return results
+      return results
+    end
+  
+    def like
+      Message.post(id.to_s + '/likes')
+    end
+  
+    def unlike
+      likedbyme = likes.select {|alike| alike.unlikable}.first
+      if likedbyme
+        likedbyme.prefix_options = {:message_id => self.id}
+        likedbyme.destroy 
+      end
+    end
+  
+    def flag
+      Message.post(id.to_s + '/flags')
+    end
+
+    def unflag
+      Message.delete(id.to_s + '/flags/' + attributes[:flag].id)
+    end
+
   end
-  
-end
 
-class Stream < SocialcastAPI
+  class Comment < Base
+
+    self.site = Message.site.to_s + "messages/:message_id/"
+
+    class Like < Base
+      self.site = Comment.site.to_s + "comments/:comment_id/"
+    end
+
+    def like
+      Comment.post(id.to_s + '/likes')
+    end
   
-  def messages(args = {})
-    get(:messages, args).map {|message| Message.new(message)}
+    def unlike
+      likedbyme = likes.select {|alike| alike.unlikable}.first
+      if likedbyme
+        likedbyme.prefix_options = {:message_id => message_id, :comment_id => self.id}
+        likedbyme.destroy 
+      end
+    end
+
   end
 
-end
+  class User < Base
 
-class Group < SocialcastAPI
+    def self.search(args = {})
+      get(:search, args).map {|user| User.new(user)}
+    end
   
-  def members(args = {})
-    get(:members, args).map {|member| User.new(member)}
+    def messages
+      get(:messages).map {|message| Message.new(message)}
+    end
+  
+    def followers(args = {})
+      get(:followers, args).map {|follower| User.new(follower)}
+    end
+  
+    def follow
+      User.post(id.to_s + '/followers')
+    end
+  
+    def unfollow
+      delete('followers/' + contact_id.to_s)  
+    end
+  
+    def following(args = {})
+      get(:following, args).map {|user| User.new(user)}
+    end
+
+    def self.all_pages
+      results = Array.new
+      page = 1
+      per_page = 500    
+    
+      begin
+        users = all(:params => {:page => page, :per_page => per_page})
+        page += 1
+        results += users
+      end until users.count < per_page
+
+      return results
+    end
+  
   end
+
+  class Stream < Base
   
-end
+    def messages(args = {})
+      get(:messages, args).map {|message| Message.new(message)}
+    end
 
-class GroupMembership < SocialcastAPI
-end
+  end
 
-class Category < SocialcastAPI
-end
+  class Group < Base
+  
+    def members(args = {})
+      get(:members, args).map {|member| User.new(member)}
+    end
+  
+  end
 
-class ContentFilter < SocialcastAPI
-end
+  class GroupMembership < Base
+  end
 
-# This class is not working or tested yet, just a frame!
-class Attachment < SocialcastAPI
+  class Category < Base
+  end
+
+  class ContentFilter < Base
+  end
+
+  # This class is not working or tested yet, just a frame!
+  class Attachment < Base
+  end
 end
