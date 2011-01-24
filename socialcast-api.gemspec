@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.description = %q{Socialcast API Interface and Examples.  This is a fork of https://github.com/mclosson/socialcast-api}
 
   s.rubyforge_project = "scashin133-socialcast-api"
-  s.add_runtime_dependency(%q<active_resource>, [">= 2.3"])
+  s.add_runtime_dependency(%q<activeresource>, [">= 2.3"])
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
