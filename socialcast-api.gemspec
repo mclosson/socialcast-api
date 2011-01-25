@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Matthew Closson", "Sean Cashin"]
   s.email       = ["scashin133@gmail.com"]
-  s.homepage    = "http://github.com/scashin133/socialcast-api"
+  s.homepage    = "http://github.com/mclosson/socialcast-api"
   s.summary     = %q{Socialcast API Interface and Examples}
   s.description = %q{Socialcast API Interface and Examples.  This is a fork of https://github.com/mclosson/socialcast-api}
 
