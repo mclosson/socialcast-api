@@ -1,20 +1,8 @@
 module SocialcastApi
   class Base < ActiveResource::Base
-
-    def self.site
-      @@site || "https://#{SocialcastApi.configuration.domain}/api/"
-    end
-    def self.user
-      @@user || SocialcastApi.configuration.user
-    end
-    def self.password=(password)
-      @@password || SocialcastApi.configuration.password
-    end
-    def self.update_connection
-      self.site = "https://#{SocialcastApi.configuration.domain}/api/"
-      self.user = SocialcastApi.configuration.user
-      self.password = SocialcastApi.configuration.password
-    end
+    self.site = "https://#{SocialcastApi.configuration.domain}/api/"
+    self.user = SocialcastApi.configuration.user
+    self.password = SocialcastApi.configuration.password
   end
 
   class Message < Base
