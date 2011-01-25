@@ -1,6 +1,6 @@
 module SocialcastApi
   class Base < ActiveResource::Base
-    self.site = "https://#{SocialcastApi.configuration.domain}/api/"
+    self.site = SocialcastApi.configuration.site
     self.user = SocialcastApi.configuration.user
     self.password = SocialcastApi.configuration.password
   end
