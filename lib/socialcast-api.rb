@@ -12,7 +12,7 @@ module SocialcastApi
   def self.configuration
     if block_given?
       yield Configuration.instance
-      if Configuration.config_file
+      if Configuration.instance.config_file
         config = YAML::load_file(Configuration.config_file)
         Configuration.site = config['site']
         Configuration.user = config['user']
