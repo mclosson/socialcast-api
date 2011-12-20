@@ -22,8 +22,8 @@ module SocialcastApi
     def self.search_all_pages(args = {})
       results = Array.new
       page = 1
-      per_page = 500    
-  
+      per_page = 500
+
       begin
         messages = get(:search, :page => page, :per_page => per_page, :q => args[:q]).map {|message| Message.new(message)}
         page += 1
@@ -41,7 +41,7 @@ module SocialcastApi
       likedbyme = likes.select {|alike| alike.unlikable}.first
       if likedbyme
         likedbyme.prefix_options = {:message_id => self.id}
-        likedbyme.destroy 
+        likedbyme.destroy
       end
     end
 
@@ -71,7 +71,7 @@ module SocialcastApi
       likedbyme = likes.select {|alike| alike.unlikable}.first
       if likedbyme
         likedbyme.prefix_options = {:message_id => message_id, :comment_id => self.id}
-        likedbyme.destroy 
+        likedbyme.destroy
       end
     end
 
@@ -96,7 +96,7 @@ module SocialcastApi
     end
 
     def unfollow
-      delete('followers/' + contact_id.to_s)  
+      delete('followers/' + contact_id.to_s)
     end
 
     def following(args = {})
@@ -106,8 +106,8 @@ module SocialcastApi
     def self.all_pages
       results = Array.new
       page = 1
-      per_page = 500    
-  
+      per_page = 500
+
       begin
         users = all(:params => {:page => page, :per_page => per_page})
         page += 1

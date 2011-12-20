@@ -1,7 +1,7 @@
 First off I am not affiliated with Socialcast the company in any way.
 
 SocialcastAPI is a ruby interface to the RESTful API provided by Socialcast.com
-for interacting with their services as outlined here: 
+for interacting with their services as outlined here:
 
 http://www.socialcast.com/resources/api.html
 
@@ -9,11 +9,11 @@ Here I am implementing it using the ActiveResource library
 
 http://api.rubyonrails.org/classes/ActiveResource/Base.html
 
-which supports dynamically generating Ruby objects from the XML or JSON 
-structures returned from the calls to the web services.  At this point it is 
+which supports dynamically generating Ruby objects from the XML or JSON
+structures returned from the calls to the web services.  At this point it is
 mostly functional, I haven't really started playing with the attachments portion
-yet so don't expect that to work at the moment.  I need to add a lot of 
-documentation and examples though.  That's probably the next big thing to be 
+yet so don't expect that to work at the moment.  I need to add a lot of
+documentation and examples though.  That's probably the next big thing to be
 done.
 
 # Post a new message to your general purpose stream
