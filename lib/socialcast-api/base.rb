@@ -1,8 +1,11 @@
 module SocialcastApi
   class Base < ActiveResource::Base
     self.site = SocialcastApi.configuration.site
-    self.user = SocialcastApi.configuration.user
-    self.password = SocialcastApi.configuration.password
+    if(SocialcastApi.configuration.oauthtoken.to_s == '')
+      self.user = SocialcastApi.configuration.user
+      self.password = SocialcastApi.configuration.password
+    else
+     self.headers['authorization'] = 'Bearer ' + SocialcastApi.configuration.oauthtoken.to_s
   end
 
   class Message < Base

@@ -16,6 +16,13 @@ yet so don't expect that to work at the moment.  I need to add a lot of
 documentation and examples though.  That's probably the next big thing to be 
 done.
 
+```
+SocialcastApi.configuration do |socialcast|
+  socialcast.user = "emily@socialcast.com"
+  socialcast.password = 'demo'
+  socialcast.site   = "https://demo.socialcast.com"
+end
+
 # Post a new message to your general purpose stream
 Message.new(:body => 'This was sent via the API')
 
@@ -38,6 +45,8 @@ puts User.all_pages.count
 User.all_pages.each_with_index do |user, index|
   puts "#{index}: #{user.name} - #{user.url}"
 end
+
+```
 
 More examples to come.
 
