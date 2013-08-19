@@ -16,12 +16,22 @@ yet so don't expect that to work at the moment.  I need to add a lot of
 documentation and examples though.  That's probably the next big thing to be 
 done.
 
-```
+```ruby
+require 'socialcast-api'
+
+include SocialcastApi
+
+#Setting up Configuration for basic authentication.
 SocialcastApi.configuration do |socialcast|
   socialcast.user = "emily@socialcast.com"
   socialcast.password = 'demo'
   socialcast.site   = "https://demo.socialcast.com"
+
+  #use below configuration setting for the oauth token. The username and password are ignored in case an oauthtoken is passed
+  socialcast.oauthtoken = "Oauth token"
+
 end
+
 
 # Post a new message to your general purpose stream
 Message.new(:body => 'This was sent via the API')
