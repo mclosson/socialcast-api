@@ -1,3 +1,6 @@
+Socialcast API Wrapper
+======================
+
 First off I am not affiliated with Socialcast the company in any way.
 
 SocialcastAPI is a ruby interface to the RESTful API provided by Socialcast.com
