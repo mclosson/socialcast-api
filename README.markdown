@@ -25,10 +25,12 @@ include SocialcastApi
 SocialcastApi.configuration do |socialcast|
   socialcast.user = "emily@socialcast.com"
   socialcast.password = 'demo'
-  socialcast.site   = "https://demo.socialcast.com"
 
   #use below configuration setting for the oauth token. The username and password are ignored in case an oauthtoken is passed
   socialcast.oauthtoken = "Oauth token"
+
+  #The site setting is mandatory for the gem to work
+  socialcast.site   = "https://demo.socialcast.com"
 
 end
 
