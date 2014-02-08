@@ -5,7 +5,7 @@ require 'yaml'
 module SocialcastApi
   class Configuration
     include Singleton
-    ATTRIBUTES = [:site, :user, :password, :config_file]
+    ATTRIBUTES = [:site, :user, :password, :config_file, :oauthtoken]
     attr_accessor *ATTRIBUTES
   end
   
@@ -17,6 +17,7 @@ module SocialcastApi
         Configuration.site = config['site']
         Configuration.user = config['user']
         Configuration.password = config['password']
+        Configuration.oauthtoken = config['oauthtoken']
       end
       require 'socialcast-api/base'
     end

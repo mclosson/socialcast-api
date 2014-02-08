@@ -1,3 +1,6 @@
+Socialcast API Wrapper
+======================
+
 First off I am not affiliated with Socialcast the company in any way.
 
 SocialcastAPI is a ruby interface to the RESTful API provided by Socialcast.com
@@ -15,6 +18,25 @@ mostly functional, I haven't really started playing with the attachments portion
 yet so don't expect that to work at the moment.  I need to add a lot of 
 documentation and examples though.  That's probably the next big thing to be 
 done.
+
+```ruby
+require 'socialcast-api'
+
+include SocialcastApi
+
+#Setting up Configuration for basic authentication.
+SocialcastApi.configuration do |socialcast|
+  socialcast.user = "emily@socialcast.com"
+  socialcast.password = 'demo'
+
+  #use below configuration setting for the oauth token. The username and password are ignored in case an oauthtoken is passed
+  socialcast.oauthtoken = "Oauth token"
+
+  #The site setting is mandatory for the gem to work
+  socialcast.site   = "https://demo.socialcast.com"
+
+end
+
 
 # Post a new message to your general purpose stream
 Message.new(:body => 'This was sent via the API')
@@ -38,6 +60,8 @@ puts User.all_pages.count
 User.all_pages.each_with_index do |user, index|
   puts "#{index}: #{user.name} - #{user.url}"
 end
+
+```
 
 More examples to come.
 
