@@ -8,7 +8,7 @@ module SocialcastApi
     ATTRIBUTES = [:site, :user, :password, :config_file]
     attr_accessor *ATTRIBUTES
   end
-  
+
   def self.configuration
     if block_given?
       yield Configuration.instance
